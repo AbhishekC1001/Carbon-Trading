@@ -2,7 +2,7 @@
 
 A real-time carbon credit trading platform that ingests emissions data, manages credit balances, and matches buy/sell orders continuously.
 
-> **ACP CW3 — Advanced Cloud Platforms**  
+> **ACP CW3 — Applied Cloud Programming**  
 > University of Edinburgh  
 > Student ID: s2891348
 
@@ -10,7 +10,7 @@ A real-time carbon credit trading platform that ingests emissions data, manages 
 
 ## What this project is
 
-A proof-of-concept SaaS platform for carbon credit trading, inspired by ETRM/CTRM systems like ION Aspect. Companies report emissions in real time; the system tracks how much of their regulatory cap has been used; they buy and sell carbon credits through an order-matching engine; everything is backed by a REST API and visible on a live dashboard.
+A proof-of-concept SaaS platform for carbon credit trading. Companies report emissions in real time; the system tracks how much of their regulatory cap has been used; they buy and sell carbon credits through an order-matching engine; everything is backed by a REST API and visible on a live dashboard.
 
 ---
 
@@ -37,11 +37,13 @@ A proof-of-concept SaaS platform for carbon credit trading, inspired by ETRM/CTR
 
 ## How to Run
 
+**Important:** before running any command below, unzip the project and `cd` into the project folder (the folder that contains `docker-compose.yml`). All commands must be run from this directory.
+
 There are two ways to run this project. Both produce exactly the same behaviour — pick whichever is easier for you.
 
 ### Option A — Docker (recommended, no Java needed)
 
-This matches the CW2 submission pattern: a pre-built Docker image plus infrastructure via `docker-compose`.
+This uses the pre-built Docker image shipped with the submission plus infrastructure via `docker-compose`.
 
 **1. Start infrastructure (Kafka, RabbitMQ, Redis, Postgres):**
 
@@ -132,38 +134,6 @@ docker compose down -v
 
 Once the app is running, you can exercise the system two ways — via REST API or through the web dashboard. Both do identical things; pick whichever is more convenient.
 
-### Testing via Web Dashboard
-
-Open **http://localhost:8080/dashboard.html** in your browser.
-
-The dashboard has four views accessible from the sidebar:
-
-- **Overview** — Live market price, company emissions progress bars, recent alerts
-- **Trading Desk** — Order entry form + live bid/ask order book
-- **Trade History** — All executed trades in chronological order
-- **Alert Stream** — Complete feed of all warnings and notifications
-
-Two action buttons in the sidebar avoid the need for Postman:
-
-- **Register Company** — Opens a modal to add a new company
-- **Start Simulator** — Toggles the emissions simulation on/off
-
-**Suggested demo flow:**
-
-1. Click "Register Company" in the sidebar. Add:
-   - `SHELL` — Shell plc — cap 10000
-   - `BP` — BP plc — cap 8000
-   - `ENGIE` — Engie SA — cap 6000
-2. Click "Start Simulator" — watch emissions flow in (progress bars fill on the Overview view)
-3. Go to Trading Desk. Place:
-   - `SELL` SHELL, 500 credits, £25.00
-   - `BUY` BP, 300 credits, £25.00
-   - These will match immediately — check Trade History
-4. Let the simulator run until a company hits 80% of its cap — a warning alert fires
-5. Keep going until one exceeds 100% — a critical alert fires
-
----
-
 ### Testing via REST API
 
 Base URL: `http://localhost:8080/api/v1/carbon`
@@ -247,6 +217,38 @@ curl http://localhost:8080/api/v1/carbon/companies
 
 ---
 
+### Testing via Web Dashboard
+
+Open **http://localhost:8080/dashboard.html** in your browser.
+
+The dashboard has four views accessible from the sidebar:
+
+- **Overview** — Live market price, company emissions progress bars, recent alerts
+- **Trading Desk** — Order entry form + live bid/ask order book
+- **Trade History** — All executed trades in chronological order
+- **Alert Stream** — Complete feed of all warnings and notifications
+
+Two action buttons in the sidebar avoid the need for Postman:
+
+- **Register Company** — Opens a modal to add a new company
+- **Start Simulator** — Toggles the emissions simulation on/off
+
+**Suggested demo flow:**
+
+1. Click "Register Company" in the sidebar. Add:
+   - `SHELL` — Shell plc — cap 10000
+   - `BP` — BP plc — cap 8000
+   - `ENGIE` — Engie SA — cap 6000
+2. Click "Start Simulator" — watch emissions flow in (progress bars fill on the Overview view)
+3. Go to Trading Desk. Place:
+   - `SELL` SHELL, 500 credits, £25.00
+   - `BUY` BP, 300 credits, £25.00
+   - These will match immediately — check Trade History
+4. Let the simulator run until a company hits 80% of its cap — a warning alert fires
+5. Keep going until one exceeds 100% — a critical alert fires
+
+---
+
 ## Project Structure
 
 ```
@@ -262,10 +264,10 @@ carbon-trading/
         ├── java/uk/ac/ed/acp/cw3/
         │   ├── CarbonTradingApplication.java
         │   ├── config/
-        │   │   └── AppConfig.java               # Kafka, Redis, RabbitMQ beans
+        │   │   └── AppConfig.java
         │   ├── controller/
-        │   │   └── CarbonController.java        # All REST endpoints
-        │   ├── model/                           # JPA entities + repositories
+        │   │   └── CarbonController.java
+        │   ├── model/
         │   │   ├── Company.java
         │   │   ├── CompanyRepository.java
         │   │   ├── Trade.java
@@ -273,67 +275,13 @@ carbon-trading/
         │   │   ├── EmissionsReading.java
         │   │   └── EmissionsReadingRepository.java
         │   └── service/
-        │       ├── RedisService.java            # Live state management
-        │       ├── AlertService.java            # Publishes to RabbitMQ
-        │       ├── EmissionsService.java        # Kafka consumer
-        │       ├── SimulatorService.java        # Kafka producer (fake data)
-        │       └── TradingService.java          # Order matching engine
+        │       ├── RedisService.java
+        │       ├── AlertService.java
+        │       ├── EmissionsService.java
+        │       ├── SimulatorService.java
+        │       └── TradingService.java
         └── resources/
             ├── application.yml
             └── static/
-                └── dashboard.html               # Multi-view SPA dashboard
+                └── dashboard.html
 ```
-
----
-
-## Architecture
-
-```
- Emissions Simulator
-        |
-        v
-  Kafka [emissions topic]
-        |
-        v
- EmissionsService (consumer thread)
-        |
-        +--> Redis              (running totals, credit balances)
-        +--> PostgreSQL         (emissions history for audit)
-        +--> AlertService --> RabbitMQ (cap warnings & exceeded alerts)
-
- REST API (buy/sell orders, company registration)
-        |
-        v
- TradingService (order matching engine)
-        |
-        +--> Redis              (order book, market price)
-        +--> PostgreSQL         (permanent trade ledger)
-        +--> AlertService --> RabbitMQ (trade match notifications)
-
- Dashboard (HTML / JS)
-        |
-        v
- Polls REST endpoints every 2 seconds
-```
-
----
-
-## Key Design Decisions
-
-**Why Redis and Postgres?**  
-Redis holds hot, constantly-changing state — a company's running emissions total updates several times per second. Writing every increment to Postgres would be wasteful. Postgres holds the durable, audit-worthy data: company registrations, matched trades, and individual emissions readings for historical reporting.
-
-**Why Kafka for emissions but RabbitMQ for alerts?**  
-Emissions data is a continuous stream that potentially many consumers might want to read (the balance service, an analytics service, a regulatory reporting service). Kafka's pub-sub with independent consumer offsets is the right fit. Alerts are discrete events routed to specific consumers; RabbitMQ's queue-based model is simpler.
-
-**Why no authentication?**  
-This is a proof-of-concept. Companies are identified by a `companyId` string passed in each request. In production this would be replaced with OAuth/JWT.
-
-**Why polling in the dashboard instead of WebSockets?**  
-Simpler to build and simpler to reason about. A 2-second poll on lightweight REST endpoints is sufficient for human-speed trading visualisation.
-
----
-
-## AI Usage
-
-Assistance with architectural brainstorming, debugging, and iterating on the UI design was provided by Claude (Anthropic). All design decisions, code structure, and implementation were reviewed and understood before inclusion. See `cw3_explanation.pdf` for details.
