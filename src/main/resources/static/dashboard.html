@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emerald — Carbon Credit Exchange</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #fafaf7;
+            --surface: #ffffff;
+            --surface-2: #f5f4ef;
+            --ink: #1a1f1c;
+            --ink-dim: #565b56;
+            --ink-faint: #8a8e89;
+            --border: #e8e6df;
+            --border-strong: #d4d0c5;
+            --accent: #1b5e3f;
+            --accent-light: #2a8159;
+            --accent-glow: #4ade80;
+            --emerald-1: #064e3b;
+            --emerald-2: #047857;
+            --emerald-3: #10b981;
+            --emerald-4: #6ee7b7;
+            --gold: #c9a961;
+            --danger: #b91c1c;
+            --danger-bg: #fef2f2;
+            --warning: #c2410c;
+            --warning-bg: #fff7ed;
+            --success: #047857;
+            --success-bg: #ecfdf5;
+            --shadow-sm: 0 1px 2px 0 rgba(26, 31, 28, 0.04);
+            --shadow: 0 4px 16px -2px rgba(26, 31, 28, 0.06), 0 2px 4px -1px rgba(26, 31, 28, 0.04);
+            --shadow-lg: 0 20px 40px -8px rgba(26, 31, 28, 0.1), 0 8px 16px -4px rgba(26, 31, 28, 0.06);
+            --radius: 14px;
+            --radius-sm: 8px;
+            --radius-lg: 20px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            font-size: 14px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background:
+                    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(16, 185, 129, 0.08), transparent 60%),
+                    radial-gradient(ellipse 70% 50% at 80% 100%, rgba(201, 169, 97, 0.05), transparent 60%),
+                    var(--bg);
+            min-height: 100vh;
+        }
+
+        .serif { font-family: 'Fraunces', serif; font-feature-settings: "ss01", "ss02"; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+
+        /* ===== Layout ===== */
+        .app {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            min-height: 100vh;
+        }
+
+        /* ===== Sidebar ===== */
+        .sidebar {
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 28px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 8px;
+        }
+
+        .brand-icon {
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--emerald-2), var(--emerald-3));
+            display: grid;
+            place-items: center;
+            color: white;
+            font-family: 'Fraunces', serif;
+            font-weight: 700;
+            font-size: 18px;
+            box-shadow: 0 4px 12px -2px rgba(16, 185, 129, 0.4);
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-name {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: 18px;
+            letter-spacing: -0.02em;
+            color: var(--ink);
+        }
+
+        .brand-sub {
+            font-size: 10px;
+            color: var(--ink-faint);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .nav-label {
+            font-size: 10px;
+            letter-spacing: 0.1em;
+            color: var(--ink-faint);
+            text-transform: uppercase;
+            padding: 8px 12px;
+            font-weight: 600;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            color: var(--ink-dim);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-size: 13.5px;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .nav-item:hover {
+            background: var(--surface-2);
+            color: var(--ink);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(to right, rgba(16, 185, 129, 0.08), transparent);
+            color: var(--emerald-1);
+            font-weight: 600;
+        }
+
+        .nav-item.active::before {
+            content: '';
+            width: 3px;
+            height: 18px;
+            background: var(--emerald-2);
+            border-radius: 2px;
+            margin-left: -15px;
+            margin-right: 9px;
+        }
+
+        .nav-icon {
+            width: 18px; height: 18px;
+            display: grid; place-items: center;
+            opacity: 0.8;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            padding: 16px;
+            background: linear-gradient(135deg, #064e3b 0%, #047857 100%);
+            border-radius: var(--radius);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar-bottom::before {
+            content: '';
+            position: absolute;
+            top: -40px; right: -40px;
+            width: 120px; height: 120px;
+            background: radial-gradient(circle, rgba(255,255,255,0.15), transparent 70%);
+            border-radius: 50%;
+        }
+
+        .sidebar-bottom-label {
+            font-size: 10px;
+            letter-spacing: 0.08em;
+            opacity: 0.8;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .sidebar-bottom-val {
+            font-family: 'Fraunces', serif;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .sidebar-bottom-sub {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        /* ===== Main ===== */
+        .main {
+            padding: 32px 40px;
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-title {
+            font-family: 'Fraunces', serif;
+            font-size: 38px;
+            font-weight: 500;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            color: var(--ink);
+        }
+
+        .header-title .italic {
+            font-style: italic;
+            font-weight: 400;
+            color: var(--emerald-2);
+        }
+
+        .header-sub {
+            color: var(--ink-dim);
+            margin-top: 8px;
+            font-size: 14px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .sim-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--ink-dim);
+        }
+
+        .pulse-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--ink-faint);
+        }
+
+        .pulse-dot.live {
+            background: var(--emerald-3);
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); }
+            70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        .btn {
+            padding: 9px 18px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--ink);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .btn:hover {
+            border-color: var(--border-strong);
+            background: var(--surface-2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--emerald-2), var(--emerald-1));
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 2px 8px -2px rgba(4, 120, 87, 0.4);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--emerald-1), #065f46);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px -2px rgba(4, 120, 87, 0.5);
+        }
+
+        .btn-danger {
+            background: var(--surface);
+            color: var(--danger);
+            border-color: var(--border);
+        }
+
+        .btn-danger:hover {
+            background: var(--danger-bg);
+            border-color: #fecaca;
+        }
+
+        /* ===== Views ===== */
+        .view { display: none; animation: fadeUp 0.4s ease-out; }
+        .view.active { display: block; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== Cards ===== */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 22px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 18px;
+        }
+
+        .card-title {
+            font-family: 'Fraunces', serif;
+            font-size: 18px;
+            font-weight: 500;
+            letter-spacing: -0.01em;
+        }
+
+        .card-meta {
+            font-size: 11px;
+            color: var(--ink-faint);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        /* ===== Overview: hero metrics ===== */
+        .metrics-row {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .metric-hero {
+            background: linear-gradient(135deg, #064e3b 0%, #047857 60%, #0d8a6a 100%);
+            color: white;
+            padding: 24px 26px;
+            border-radius: var(--radius);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .metric-hero::before {
+            content: '';
+            position: absolute;
+            top: -50px; right: -50px;
+            width: 200px; height: 200px;
+            background: radial-gradient(circle, rgba(110, 231, 183, 0.2), transparent 70%);
+        }
+
+        .metric-hero::after {
+            content: '◉';
+            position: absolute;
+            top: 18px; right: 22px;
+            font-size: 10px;
+            opacity: 0.5;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ink-faint);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .metric-hero .metric-label { color: rgba(255,255,255,0.7); }
+
+        .metric-value {
+            font-family: 'Fraunces', serif;
+            font-size: 42px;
+            font-weight: 500;
+            letter-spacing: -0.03em;
+            line-height: 1;
+        }
+
+        .metric-value .unit {
+            font-size: 18px;
+            color: var(--ink-faint);
+            font-weight: 400;
+            margin-left: 4px;
+        }
+
+        .metric-hero .metric-value .unit { color: rgba(255,255,255,0.6); }
+
+        .metric-sub {
+            font-size: 12px;
+            color: var(--ink-dim);
+            margin-top: 8px;
+            display: flex; align-items: center; gap: 6px;
+        }
+
+        .metric-hero .metric-sub { color: rgba(255,255,255,0.7); }
+
+        .metric {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 22px;
+            position: relative;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .metric .metric-value {
+            font-size: 30px;
+            color: var(--ink);
+        }
+
+        .delta-up { color: var(--success); }
+        .delta-down { color: var(--danger); }
+
+        /* ===== Overview: table ===== */
+        .overview-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        table.data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table.data-table th {
+            text-align: left;
+            padding: 10px 12px;
+            font-size: 11px;
+            color: var(--ink-faint);
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border);
+        }
+
+        table.data-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13.5px;
+        }
+
+        table.data-table tbody tr:last-child td { border-bottom: none; }
+
+        table.data-table tbody tr {
+            transition: background 0.1s;
+        }
+
+        table.data-table tbody tr:hover {
+            background: var(--surface-2);
+        }
+
+        .company-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .company-avatar {
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--emerald-2), var(--emerald-3));
+            display: grid; place-items: center;
+            color: white;
+            font-weight: 600;
+            font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: -0.02em;
+        }
+
+        .company-info { display: flex; flex-direction: column; }
+        .company-id { font-weight: 600; }
+        .company-name { font-size: 11px; color: var(--ink-faint); }
+
+        .num-cell {
+            font-family: 'JetBrains Mono', monospace;
+            font-variant-numeric: tabular-nums;
+            font-size: 13px;
+        }
+
+        .usage-bar {
+            width: 120px;
+            height: 6px;
+            background: var(--surface-2);
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .usage-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .usage-pct {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11.5px;
+            font-weight: 500;
+            min-width: 42px;
+            text-align: right;
+        }
+
+        .usage-wrapper {
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        .balance-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 100px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .balance-pill.positive {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+
+        .balance-pill.negative {
+            background: var(--danger-bg);
+            color: var(--danger);
+        }
+
+        /* ===== Alerts sidebar ===== */
+        .alerts-stream {
+            max-height: 480px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-right: 4px;
+        }
+
+        .alert-item {
+            padding: 14px;
+            border-radius: var(--radius-sm);
+            border-left: 3px solid;
+            font-size: 13px;
+            background: var(--surface-2);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .alert-trade { border-color: var(--emerald-3); background: var(--success-bg); }
+        .alert-warning { border-color: #f59e0b; background: var(--warning-bg); }
+        .alert-critical { border-color: var(--danger); background: var(--danger-bg); }
+
+        .alert-type {
+            font-size: 10px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 4px;
+            opacity: 0.9;
+        }
+
+        .alert-msg {
+            color: var(--ink);
+            line-height: 1.4;
+        }
+
+        .alert-time {
+            font-size: 11px;
+            color: var(--ink-faint);
+            font-family: 'JetBrains Mono', monospace;
+            margin-top: 6px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--ink-faint);
+            font-size: 13px;
+        }
+
+        /* ===== Trading Desk ===== */
+        .trading-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 14px;
+        }
+
+        .order-form {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .type-toggle {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            background: var(--surface-2);
+            padding: 4px;
+            border-radius: 10px;
+        }
+
+        .type-option {
+            padding: 12px 16px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.15s;
+            color: var(--ink-dim);
+            border: none;
+            background: transparent;
+            font-family: inherit;
+        }
+
+        .type-option.active.buy {
+            background: var(--emerald-2);
+            color: white;
+            box-shadow: 0 2px 6px -1px rgba(4, 120, 87, 0.4);
+        }
+
+        .type-option.active.sell {
+            background: var(--danger);
+            color: white;
+            box-shadow: 0 2px 6px -1px rgba(185, 28, 28, 0.4);
+        }
+
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+
+        .form-label {
+            font-size: 11px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--ink-faint);
+            font-weight: 600;
+        }
+
+        .form-input, .form-select {
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--surface);
+            font-family: inherit;
+            font-size: 14px;
+            color: var(--ink);
+            transition: border-color 0.15s;
+        }
+
+        .form-input.mono { font-family: 'JetBrains Mono', monospace; }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--emerald-3);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .submit-btn {
+            padding: 14px;
+            border-radius: 10px;
+            border: none;
+            color: white;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 4px;
+        }
+
+        .submit-btn.buy {
+            background: linear-gradient(135deg, var(--emerald-2), var(--emerald-1));
+            box-shadow: 0 4px 12px -2px rgba(4, 120, 87, 0.4);
+        }
+
+        .submit-btn.sell {
+            background: linear-gradient(135deg, #dc2626, #991b1b);
+            box-shadow: 0 4px 12px -2px rgba(220, 38, 38, 0.4);
+        }
+
+        .submit-btn:hover { transform: translateY(-1px); filter: brightness(1.08); }
+        .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        .orderbook-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            background: var(--border);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+        }
+
+        .book-side { background: var(--surface); padding: 16px; }
+        .book-header {
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .book-header.buys { color: var(--success); }
+        .book-header.sells { color: var(--danger); }
+
+        .book-count {
+            font-size: 10px;
+            padding: 2px 8px;
+            background: var(--surface-2);
+            border-radius: 100px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--ink-dim);
+            font-weight: 500;
+        }
+
+        .order-row {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 8px;
+            padding: 7px 4px;
+            font-size: 12.5px;
+            font-family: 'JetBrains Mono', monospace;
+            font-variant-numeric: tabular-nums;
+            position: relative;
+            border-radius: 4px;
+        }
+
+        .order-row::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 4px;
+            opacity: 0.1;
+        }
+
+        .order-row.buy::before { background: var(--success); }
+        .order-row.sell::before { background: var(--danger); }
+
+        .order-row > * { position: relative; }
+
+        .order-price { font-weight: 600; }
+        .order-row.buy .order-price { color: var(--success); }
+        .order-row.sell .order-price { color: var(--danger); }
+
+        .order-size { color: var(--ink-dim); text-align: right; }
+        .order-company { color: var(--ink); font-weight: 500; text-align: right; font-family: 'Inter', sans-serif; font-size: 11px; }
+
+        /* ===== Analytics / Trades ===== */
+        .trades-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+        }
+
+        .trade-row-modern {
+            display: grid;
+            grid-template-columns: auto 1fr 1fr 1fr 1fr auto;
+            gap: 20px;
+            padding: 14px 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            align-items: center;
+            transition: all 0.15s;
+        }
+
+        .trade-row-modern:hover {
+            border-color: var(--emerald-4);
+            background: var(--success-bg);
+        }
+
+        .trade-flow-icon {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--emerald-3), var(--emerald-2));
+            display: grid; place-items: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        .trade-info-label {
+            font-size: 10px;
+            color: var(--ink-faint);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .trade-info-val {
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .trade-info-val.mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .trade-flow {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+        }
+
+        .trade-arrow {
+            color: var(--emerald-3);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* ===== Toast ===== */
+        #toast-container {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .toast {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--emerald-3);
+            padding: 12px 16px;
+            border-radius: 10px;
+            box-shadow: var(--shadow-lg);
+            min-width: 280px;
+            animation: toastIn 0.3s ease-out;
+            font-size: 13px;
+        }
+
+        .toast.error { border-left-color: var(--danger); }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* ===== Scrollbar ===== */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-strong);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: var(--ink-faint); }
+
+        /* Register form modal */
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(26, 31, 28, 0.4);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+        .modal-backdrop.open { display: flex; }
+        .modal {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            width: 440px;
+            box-shadow: var(--shadow-lg);
+        }
+        .modal-title {
+            font-family: 'Fraunces', serif;
+            font-size: 22px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        .modal-sub {
+            color: var(--ink-dim);
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <!-- ===== Sidebar ===== -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">◆</div>
+            <div class="brand-text">
+                <span class="brand-name">Emerald</span>
+                <span class="brand-sub">Carbon Exchange</span>
+            </div>
+        </div>
+
+        <nav class="nav">
+            <div class="nav-label">Platform</div>
+            <button class="nav-item active" data-view="overview">
+                <span class="nav-icon">◈</span>
+                <span>Overview</span>
+            </button>
+            <button class="nav-item" data-view="trading">
+                <span class="nav-icon">⇌</span>
+                <span>Trading Desk</span>
+            </button>
+            <button class="nav-item" data-view="trades">
+                <span class="nav-icon">◐</span>
+                <span>Trade History</span>
+            </button>
+            <button class="nav-item" data-view="alerts">
+                <span class="nav-icon">●</span>
+                <span>Alert Stream</span>
+            </button>
+
+            <div class="nav-label" style="margin-top: 16px;">Simulation</div>
+            <button class="nav-item" id="simToggle">
+                <span class="nav-icon" id="simIcon">▶</span>
+                <span id="simLabel">Start Simulator</span>
+            </button>
+            <button class="nav-item" id="openRegister">
+                <span class="nav-icon">+</span>
+                <span>Register Company</span>
+            </button>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="sidebar-bottom-label">Market Price</div>
+            <div class="sidebar-bottom-val mono">£<span id="sideMarketPrice">0.00</span></div>
+            <div class="sidebar-bottom-sub">per carbon credit</div>
+        </div>
+    </aside>
+
+    <!-- ===== Main ===== -->
+    <main class="main">
+        <!-- Header -->
+        <div class="header">
+            <div>
+                <h1 class="header-title">Carbon <span class="italic">markets</span>,<br>rebuilt.</h1>
+                <p class="header-sub">A real-time exchange for emissions allowances and credits trading.</p>
+            </div>
+            <div class="header-actions">
+                <div class="sim-badge">
+                    <span class="pulse-dot" id="simStatusDot"></span>
+                    <span id="simStatusText">Offline</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== Overview View ===== -->
+        <section class="view active" id="view-overview">
+            <div class="metrics-row">
+                <div class="metric-hero">
+                    <div class="metric-label">Market Price</div>
+                    <div class="metric-value">£<span id="marketPrice">—</span><span class="unit">/credit</span></div>
+                    <div class="metric-sub">
+                        <span>●</span> Live spot price
+                    </div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Companies</div>
+                    <div class="metric-value" id="statCompanies">—</div>
+                    <div class="metric-sub">registered participants</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Open Orders</div>
+                    <div class="metric-value" id="statOrders">—</div>
+                    <div class="metric-sub">in the book</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Trades Executed</div>
+                    <div class="metric-value" id="statTrades">—</div>
+                    <div class="metric-sub">total matched</div>
+                </div>
+            </div>
+
+            <div class="overview-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Company Emissions & Balances</h2>
+                        <span class="card-meta">Live</span>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th>Company</th>
+                            <th>Cap</th>
+                            <th>Emissions</th>
+                            <th>Usage</th>
+                            <th>Credit Balance</th>
+                        </tr>
+                        </thead>
+                        <tbody id="companyTable">
+                        <tr><td colspan="5" class="empty-state">No companies registered. Register one from the sidebar.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Recent Alerts</h2>
+                        <span class="card-meta">Last 10</span>
+                    </div>
+                    <div class="alerts-stream" id="alertsStream">
+                        <div class="empty-state">No alerts yet</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Trading Desk View ===== -->
+        <section class="view" id="view-trading">
+            <div class="trading-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Place Order</h2>
+                        <span class="card-meta">Manual</span>
+                    </div>
+                    <div class="order-form">
+                        <div class="type-toggle">
+                            <button class="type-option buy active" id="btnBuy" onclick="setOrderType('BUY')">BUY</button>
+                            <button class="type-option sell" id="btnSell" onclick="setOrderType('SELL')">SELL</button>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Company</label>
+                            <select class="form-select" id="orderCompany">
+                                <option value="">Select a company...</option>
+                            </select>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Credits</label>
+                                <input type="number" class="form-input mono" id="orderCredits" placeholder="100" min="1" step="1">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Price (£)</label>
+                                <input type="number" class="form-input mono" id="orderPrice" placeholder="25.00" step="0.01">
+                            </div>
+                        </div>
+
+                        <button class="submit-btn buy" id="submitOrder" onclick="submitOrder()">Place Buy Order</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Order Book</h2>
+                        <span class="card-meta">Live</span>
+                    </div>
+                    <div class="orderbook-split">
+                        <div class="book-side">
+                            <div class="book-header buys">
+                                <span>Bids</span>
+                                <span class="book-count" id="bidCount">0</span>
+                            </div>
+                            <div id="bidList"></div>
+                        </div>
+                        <div class="book-side">
+                            <div class="book-header sells">
+                                <span>Asks</span>
+                                <span class="book-count" id="askCount">0</span>
+                            </div>
+                            <div id="askList"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Trade History View ===== -->
+        <section class="view" id="view-trades">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Executed Trades</h2>
+                    <span class="card-meta">Most Recent</span>
+                </div>
+                <div class="trades-grid" id="tradesList">
+                    <div class="empty-state">No trades executed yet. Place matching orders to see them here.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Alerts View ===== -->
+        <section class="view" id="view-alerts">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Live Alert Stream</h2>
+                    <span class="card-meta">All Events</span>
+                </div>
+                <div class="alerts-stream" id="alertsStreamFull" style="max-height: 70vh;">
+                    <div class="empty-state">No alerts yet</div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- ===== Register Modal ===== -->
+<div class="modal-backdrop" id="registerModal">
+    <div class="modal">
+        <div class="modal-title">Register Company</div>
+        <div class="modal-sub">Add a new participant to the exchange</div>
+        <div class="form-group">
+            <label class="form-label">Company ID</label>
+            <input type="text" class="form-input mono" id="regCompanyId" placeholder="SHELL" style="text-transform: uppercase;">
+        </div>
+        <div class="form-group" style="margin-top: 12px;">
+            <label class="form-label">Company Name</label>
+            <input type="text" class="form-input" id="regName" placeholder="Shell plc">
+        </div>
+        <div class="form-group" style="margin-top: 12px;">
+            <label class="form-label">Annual Emissions Cap (tonnes)</label>
+            <input type="number" class="form-input mono" id="regCap" placeholder="10000">
+        </div>
+        <div class="modal-actions">
+            <button class="btn" onclick="closeRegister()">Cancel</button>
+            <button class="btn btn-primary" onclick="registerCompany()">Register</button>
+        </div>
+    </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script>
+    const API = 'http://localhost:8080/api/v1/carbon';
+    let currentOrderType = 'BUY';
+    let companiesCache = [];
+
+    // ===== Navigation =====
+    document.querySelectorAll('.nav-item[data-view]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById('view-' + btn.dataset.view).classList.add('active');
+        });
+    });
+
+    // ===== Toast =====
+    function toast(msg, isError = false) {
+        const el = document.createElement('div');
+        el.className = 'toast' + (isError ? ' error' : '');
+        el.textContent = msg;
+        document.getElementById('toast-container').appendChild(el);
+        setTimeout(() => el.remove(), 3500);
+    }
+
+    // ===== API helpers =====
+    async function fetchJson(url, options) {
+        try {
+            const res = await fetch(url, options);
+            return { ok: res.ok, data: await res.json() };
+        } catch (e) {
+            return { ok: false, data: null };
+        }
+    }
+
+    // ===== Company avatar helper =====
+    function avatarInitials(id) {
+        return id.substring(0, 2).toUpperCase();
+    }
+
+    function avatarColor(id) {
+        const palette = [
+            'linear-gradient(135deg, #047857, #10b981)',
+            'linear-gradient(135deg, #065f46, #059669)',
+            'linear-gradient(135deg, #064e3b, #0d9488)',
+            'linear-gradient(135deg, #1e3a8a, #3b82f6)',
+            'linear-gradient(135deg, #5b21b6, #8b5cf6)',
+            'linear-gradient(135deg, #92400e, #d97706)',
+        ];
+        let hash = 0;
+        for (let i = 0; i < id.length; i++) hash = id.charCodeAt(i) + ((hash << 5) - hash);
+        return palette[Math.abs(hash) % palette.length];
+    }
+
+    // ===== Update functions =====
+    async function updateAll() {
+        updateCompanies();
+        updatePrice();
+        updateOrderbook();
+        updateTrades();
+        updateAlerts();
+        updateSimStatus();
+    }
+
+    async function updateCompanies() {
+        const { ok, data } = await fetchJson(`${API}/companies`);
+        if (!ok || !data) return;
+        companiesCache = data;
+
+        document.getElementById('statCompanies').textContent = data.length;
+
+        // Update table
+        const tbody = document.getElementById('companyTable');
+        if (data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No companies registered. Register one from the sidebar.</td></tr>';
+        } else {
+            tbody.innerHTML = data.map(c => {
+                const pct = c.emissionsCap > 0 ? (c.totalEmissions / c.emissionsCap * 100) : 0;
+                const pctR = Math.round(pct * 10) / 10;
+                let barColor = '#10b981';
+                if (pct >= 80) barColor = '#f59e0b';
+                if (pct >= 100) barColor = '#dc2626';
+                const balCls = c.creditBalance >= 0 ? 'positive' : 'negative';
+
+                return `
+                    <tr>
+                        <td>
+                            <div class="company-cell">
+                                <div class="company-avatar" style="background: ${avatarColor(c.companyId)}">${avatarInitials(c.companyId)}</div>
+                                <div class="company-info">
+                                    <span class="company-id">${c.companyId}</span>
+                                    <span class="company-name">${c.name || '—'}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="num-cell">${c.emissionsCap.toLocaleString()} t</td>
+                        <td class="num-cell">${c.totalEmissions.toLocaleString(undefined, {maximumFractionDigits:1})} t</td>
+                        <td>
+                            <div class="usage-wrapper">
+                                <div class="usage-bar">
+                                    <div class="usage-fill" style="width: ${Math.min(pct, 100)}%; background: ${barColor}"></div>
+                                </div>
+                                <span class="usage-pct" style="color: ${barColor}">${pctR}%</span>
+                            </div>
+                        </td>
+                        <td><span class="balance-pill ${balCls}">${c.creditBalance.toLocaleString(undefined, {maximumFractionDigits:1})}</span></td>
+                    </tr>`;
+            }).join('');
+        }
+
+        // Update order form select
+        const sel = document.getElementById('orderCompany');
+        const current = sel.value;
+        sel.innerHTML = '<option value="">Select a company...</option>' +
+            data.map(c => `<option value="${c.companyId}">${c.companyId} — ${c.name || ''}</option>`).join('');
+        if (current) sel.value = current;
+    }
+
+    async function updatePrice() {
+        const { ok, data } = await fetchJson(`${API}/price`);
+        if (!ok || !data) return;
+        const p = data.currentPrice.toFixed(2);
+        document.getElementById('marketPrice').textContent = p;
+        document.getElementById('sideMarketPrice').textContent = p;
+    }
+
+    async function updateOrderbook() {
+        const { ok, data } = await fetchJson(`${API}/orderbook`);
+        if (!ok || !data) return;
+
+        document.getElementById('statOrders').textContent = data.length;
+
+        const bids = data.filter(o => o.type === 'BUY').sort((a,b) => b.price - a.price);
+        const asks = data.filter(o => o.type === 'SELL').sort((a,b) => a.price - b.price);
+
+        document.getElementById('bidCount').textContent = bids.length;
+        document.getElementById('askCount').textContent = asks.length;
+
+        document.getElementById('bidList').innerHTML = bids.length ? bids.map(o => `
+                <div class="order-row buy">
+                    <span class="order-price">£${o.price.toFixed(2)}</span>
+                    <span class="order-size">${o.remainingCredits}</span>
+                    <span class="order-company">${o.companyId}</span>
+                </div>
+            `).join('') : '<div class="empty-state" style="padding: 20px 0;">No bids</div>';
+
+        document.getElementById('askList').innerHTML = asks.length ? asks.map(o => `
+                <div class="order-row sell">
+                    <span class="order-price">£${o.price.toFixed(2)}</span>
+                    <span class="order-size">${o.remainingCredits}</span>
+                    <span class="order-company">${o.companyId}</span>
+                </div>
+            `).join('') : '<div class="empty-state" style="padding: 20px 0;">No asks</div>';
+    }
+
+    async function updateTrades() {
+        const { ok, data } = await fetchJson(`${API}/trades`);
+        if (!ok || !data) return;
+
+        document.getElementById('statTrades').textContent = data.length;
+
+        const container = document.getElementById('tradesList');
+        if (data.length === 0) {
+            container.innerHTML = '<div class="empty-state">No trades executed yet. Place matching orders to see them here.</div>';
+            return;
+        }
+
+        container.innerHTML = data.map(t => {
+            const time = new Date(t.timestamp).toLocaleString();
+            return `
+                <div class="trade-row-modern">
+                    <div class="trade-flow-icon">⇌</div>
+                    <div>
+                        <div class="trade-info-label">From</div>
+                        <div class="trade-info-val">${t.sellerId}</div>
+                    </div>
+                    <div>
+                        <div class="trade-info-label">To</div>
+                        <div class="trade-info-val">${t.buyerId}</div>
+                    </div>
+                    <div>
+                        <div class="trade-info-label">Credits</div>
+                        <div class="trade-info-val mono">${t.credits.toLocaleString()}</div>
+                    </div>
+                    <div>
+                        <div class="trade-info-label">Price</div>
+                        <div class="trade-info-val mono">£${t.price.toFixed(2)}</div>
+                    </div>
+                    <div>
+                        <div class="trade-info-label">Time</div>
+                        <div class="trade-info-val mono" style="font-size: 11px; color: var(--ink-faint);">${time}</div>
+                    </div>
+                </div>`;
+        }).join('');
+    }
+
+    async function updateAlerts() {
+        const { ok, data } = await fetchJson(`${API}/alerts`);
+        if (!ok || !data) return;
+
+        const renderAlerts = (container, limit) => {
+            const items = data.slice(0, limit);
+            if (items.length === 0) {
+                container.innerHTML = '<div class="empty-state">No alerts yet</div>';
+                return;
+            }
+            container.innerHTML = items.map(a => {
+                let cls = 'alert-trade', typeLabel = 'Trade';
+                if (a.type === 'CAP_WARNING') { cls = 'alert-warning'; typeLabel = 'Warning'; }
+                else if (a.type === 'CAP_EXCEEDED') { cls = 'alert-critical'; typeLabel = 'Critical'; }
+                const time = a.timestamp ? new Date(a.timestamp).toLocaleTimeString() : '';
+                return `
+                    <div class="alert-item ${cls}">
+                        <div class="alert-type">${typeLabel}</div>
+                        <div class="alert-msg">${a.message}</div>
+                        <div class="alert-time">${time}</div>
+                    </div>`;
+            }).join('');
+        };
+
+        renderAlerts(document.getElementById('alertsStream'), 10);
+        renderAlerts(document.getElementById('alertsStreamFull'), 50);
+    }
+
+    async function updateSimStatus() {
+        const { ok, data } = await fetchJson(`${API}/simulate/status`);
+        if (!ok || !data) return;
+        const dot = document.getElementById('simStatusDot');
+        const text = document.getElementById('simStatusText');
+        const icon = document.getElementById('simIcon');
+        const label = document.getElementById('simLabel');
+
+        if (data.running) {
+            dot.classList.add('live');
+            text.textContent = 'Live Stream Active';
+            icon.textContent = '■';
+            label.textContent = 'Stop Simulator';
+        } else {
+            dot.classList.remove('live');
+            text.textContent = 'Offline';
+            icon.textContent = '▶';
+            label.textContent = 'Start Simulator';
+        }
+    }
+
+    // ===== Actions =====
+    function setOrderType(type) {
+        currentOrderType = type;
+        document.getElementById('btnBuy').classList.toggle('active', type === 'BUY');
+        document.getElementById('btnSell').classList.toggle('active', type === 'SELL');
+        const btn = document.getElementById('submitOrder');
+        btn.textContent = 'Place ' + (type === 'BUY' ? 'Buy' : 'Sell') + ' Order';
+        btn.className = 'submit-btn ' + type.toLowerCase();
+    }
+
+    async function submitOrder() {
+        const companyId = document.getElementById('orderCompany').value;
+        const credits = parseInt(document.getElementById('orderCredits').value);
+        const price = parseFloat(document.getElementById('orderPrice').value);
+
+        if (!companyId) return toast('Please select a company', true);
+        if (!credits || credits <= 0) return toast('Invalid credits amount', true);
+        if (!price || price <= 0) return toast('Invalid price', true);
+
+        const res = await fetchJson(`${API}/order`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ companyId, type: currentOrderType, credits, price })
+        });
+
+        if (res.ok) {
+            let msg = `Order placed: ${currentOrderType} ${credits} @ £${price}`;
+            if (res.data.matchesExecuted > 0) msg += ` • ${res.data.matchesExecuted} match${res.data.matchesExecuted > 1 ? 'es' : ''} executed`;
+            toast(msg);
+            document.getElementById('orderCredits').value = '';
+            document.getElementById('orderPrice').value = '';
+            updateAll();
+        } else {
+            toast(res.data?.error || 'Order failed', true);
+        }
+    }
+
+    async function toggleSimulator() {
+        const { ok, data } = await fetchJson(`${API}/simulate/status`);
+        if (!ok) return;
+        const endpoint = data.running ? 'stop' : 'start';
+        await fetch(`${API}/simulate/${endpoint}`, { method: 'POST' });
+        toast('Simulator ' + (data.running ? 'stopped' : 'started'));
+        setTimeout(updateSimStatus, 200);
+    }
+
+    document.getElementById('simToggle').addEventListener('click', toggleSimulator);
+
+
+    document.getElementById('openRegister').addEventListener('click', () => {
+        document.getElementById('registerModal').classList.add('open');
+    });
+
+    function closeRegister() {
+        document.getElementById('registerModal').classList.remove('open');
+        document.getElementById('regCompanyId').value = '';
+        document.getElementById('regName').value = '';
+        document.getElementById('regCap').value = '';
+    }
+
+    async function registerCompany() {
+        const companyId = document.getElementById('regCompanyId').value.trim().toUpperCase();
+        const name = document.getElementById('regName').value.trim();
+        const emissionsCap = parseFloat(document.getElementById('regCap').value);
+
+        if (!companyId || !name || !emissionsCap) return toast('Fill all fields', true);
+
+        const res = await fetchJson(`${API}/company`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ companyId, name, emissionsCap })
+        });
+
+        if (res.ok) {
+            toast('Company ' + companyId + ' registered');
+            closeRegister();
+            updateAll();
+        } else {
+            toast('Registration failed', true);
+        }
+    }
+
+    updateAll();
+    setInterval(updateAll, 2000);
+</script>
+</body>
+</html>

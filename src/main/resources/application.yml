@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: carbon-credit-trading
+  datasource:
+    url: jdbc:postgresql://localhost:5432/carbon
+    username: admin
+    password: admin
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+
+server:
+  port: 8080
+
+app:
+  kafka:
+    bootstrap-servers: localhost:9092
+    emissions-topic: emissions
+  redis:
+    host: localhost
+    port: 6379
+  rabbitmq:
+    host: localhost
+    port: 5672
+    alerts-queue: carbon-alerts
